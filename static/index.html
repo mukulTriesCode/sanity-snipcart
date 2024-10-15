@@ -61,11 +61,10 @@
 
         products.forEach((product) => {
           const productDiv = document.createElement('div')
-          console.log('product', product)
           productDiv.classList.add('product')
           productDiv.innerHTML = `
           <h2>${product.title}</h2>
-          <img src="https://cdn.sanity.io/images/lon003rz/production/${product.image.asset._ref}" alt="${product.title}" width="150" />
+          <img src="https://cdn.sanity.io/images/lon003rz/production/${product.image.asset._ref.split('image-')[1].replace('-png', '.png')}" alt="${product.title}" width="150" />
           <p>${product.description}</p>
           <p>Price: $${product.price}</p>
           <button class="snipcart-add-item"
@@ -74,7 +73,7 @@
             data-item-price="${product.price}"
             data-item-description="${product.description}"
             data-item-url="/"
-            data-item-image="${product.image}">
+            data-item-image="https://cdn.sanity.io/images/lon003rz/production/${product.image.asset._ref.split('image-')[1].replace('-png', '.png')}">
             Add to cart
           </button>
         `
