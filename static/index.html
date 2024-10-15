@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snipcart + Sanity Integration</title>
+    <script src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+    <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+    <style>
+      /* Basic styles */
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .product {
+        border: 1px solid #ccc;
+        padding: 16px;
+        margin: 16px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Products</h1>
+    <div id="products"></div>
+
+    <!-- Snipcart shopping cart -->
+    <div
+      hidden
+      id="snipcart"
+      data-api-key="YTI0YTg4MTUtOGRhMC00NjcwLTg2ZjUtZTJiYmMyYTlmNzllNjM4NjQ1NjU0ODYyNDEyODkz"
+    ></div>
+
+    <script>
+      async function fetchProducts() {
+        const query = encodeURIComponent('*[_type == "product"]{title, price, image, description}')
+        const url = `https://lon003rz.api.sanity.io/v1/data/query/production?query=${query}`
+
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            mode: 'cors', // Ensures CORS mode is used
+          })
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch products')
+          }
+
+          const data = await response.json()
+          displayProducts(data.result)
+        } catch (error) {
+          console.error('Error fetching products:', error)
+        }
+      }
+
+      function displayProducts(products) {
+        const productsContainer = document.getElementById('products')
+        productsContainer.innerHTML = '' // Clear existing content
+
+        products.forEach((product) => {
+          const productDiv = document.createElement('div')
+          console.log('product', product)
+          productDiv.classList.add('product')
+          productDiv.innerHTML = `
+          <h2>${product.title}</h2>
+          <img src="https://cdn.sanity.io/images/lon003rz/production/${product.image.asset._ref}" alt="${product.title}" width="150" />
+          <p>${product.description}</p>
+          <p>Price: $${product.price}</p>
+          <button class="snipcart-add-item"
+            data-item-id="${product._id}"
+            data-item-name="${product.title}"
+            data-item-price="${product.price}"
+            data-item-description="${product.description}"
+            data-item-url="/"
+            data-item-image="${product.image}">
+            Add to cart
+          </button>
+        `
+          productsContainer.appendChild(productDiv)
+        })
+      }
+
+      // Fetch products when the page loads
+      document.addEventListener('DOMContentLoaded', fetchProducts)
+    </script>
+  </body>
+</html>
