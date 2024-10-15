@@ -68,11 +68,11 @@
           <p>${product.description}</p>
           <p>Price: $${product.price}</p>
           <button class="snipcart-add-item"
-            data-item-id="${product._id}"
+            data-item-id="${product.title}"
             data-item-name="${product.title}"
             data-item-price="${product.price}"
             data-item-description="${product.description}"
-            data-item-url="/"
+            data-item-url="/${product.title}"
             data-item-image="https://cdn.sanity.io/images/lon003rz/production/${product.image.asset._ref.split('image-')[1].replace('-png', '.png')}">
             Add to cart
           </button>
